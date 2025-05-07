@@ -93,16 +93,14 @@ module system_top #(
   wire          ad5592r_spi_cnv_s;
   wire          ad5592r_spi_cs_s;
 
-   
 // Declare the PWM wires that controls the LED's
-/*
+
   wire          pwm_led_0_r; 
   wire          pwm_led_0_g;
   wire          pwm_led_0_b; 
   wire          pwm_led_1_r;
   wire          pwm_led_1_g; 
   wire          pwm_led_1_b;
-*/
 
   // instantiations
 
@@ -135,33 +133,28 @@ module system_top #(
     .dio_o(gpio_i[1:0]),
     .dio_p(btn));
 
-  /*ad_iobuf #(
-    .DATA_WIDTH (6)
-  ) i_iobuf_leds (
-    .dio_t (2'h0),
-// 2. Connect the PWM wires to the input port of the ad_iobuf
-    .dio_i ({ //led[5]
-            pwm_led_1_g,
-           //led[4]
-            pwm_led_1_r,
-            //led[3]
-            pwm_led_1_b,
-            //led[2]
-            pwm_led_0_g,
-            //led[1]
-           pwm_led_0_r,
-            //led[0]
-            pwm_led_0_b}),        
-    .dio_o (gpio_i[7:2]),
-    .dio_p (led));*/
+  // ad_iobuf #(
+  //   .DATA_WIDTH(6)
+  // ) i_iobuf_leds (
+  //   .dio_t(gpio_t[7:2]),
+  //   .dio_i(gpio_o[7:2]),
+  //   .dio_o(gpio_i[7:2]),
+  //   .dio_p(led));
 
+// Connect the PWM wires to the input port of the ad_iobuf
   ad_iobuf #(
     .DATA_WIDTH(6)
   ) i_iobuf_leds (
     .dio_t(gpio_t[7:2]),
-    .dio_i(gpio_o[7:2]),
+    .dio_i({pwm_led_1_g,  // led[5]
+            pwm_led_1_r,  // led[4]
+            pwm_led_1_b,  // led[3]
+            pwm_led_0_g,  // led[2]
+            pwm_led_0_r,  // led[1]
+            pwm_led_0_b}),// led[0]
     .dio_o(gpio_i[7:2]),
-    .dio_p(led));
+    .dio_p(led)
+  );
 
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
@@ -215,13 +208,12 @@ module system_top #(
     .spi1_csn_i (1'b1),
     .spi1_sdi_i (1'b0),
     .spi1_sdo_i (1'b0),
-    .spi1_sdo_o());
-    //. Declare the block design ports and connect them to the PWM wires 
-    /*.pwm_led_0_r(pwm_led_0_r),
+    .spi1_sdo_o(),
+    .pwm_led_0_r(pwm_led_0_r),
     .pwm_led_0_b(pwm_led_0_b),
     .pwm_led_0_g(pwm_led_0_g),
     .pwm_led_1_r(pwm_led_1_r),
     .pwm_led_1_b(pwm_led_1_b),
-    .pwm_led_1_g(pwm_led_1_g));*/
+    .pwm_led_1_g(pwm_led_1_g)); 
 
 endmodule

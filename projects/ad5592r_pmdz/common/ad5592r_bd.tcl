@@ -4,6 +4,31 @@
 ###############################################################################
 
 # system level parameter
+#create ports: pwm_led_0_r, pwm_led_0_g, pwm_led_0_b, pwm_led_1_r, pwm_led_1_g, pwm_led_1_b ports
+# command example: create_bd_port -dir O example led
+create_bd_port -dir O pwm_led_0_r
+create_bd_port -dir O pwm_led_0_b
+create_bd_port -dir O pwm_led_0_g
+
+create_bd_port -dir O pwm_led_1_r
+create_bd_port -dir O pwm_led_1_b
+create_bd_port -dir O pwm_led_1_g
+
+#add axi_pwm_custom IP using ad_ip_instance command
+ad_ip_instance  axi_pwm_custom axi_pwm_custom_i
+
+#connect the axi_pwm_custom IP to the block design ports using ad_connect command
+
+ad_connect pwm_led_0_r axi_pwm_custom_i/pwm_led_0
+ad_connect pwm_led_0_g axi_pwm_custom_i/pwm_led_1
+ad_connect pwm_led_0_b axi_pwm_custom_i/pwm_led_2
+ad_connect pwm_led_1_r axi_pwm_custom_i/pwm_led_3
+ad_connect pwm_led_1_g axi_pwm_custom_i/pwm_led_4
+ad_connect pwm_led_1_b axi_pwm_custom_i/pwm_led_5
+
+#connect the axi_pwm_custom IP to the CPU using ad_cpu_interconnect at 0x44a00000
+ad_cpu_interconnect 0x44b30000 axi_pwm_custom_i
+
 
 set SPI_4WIRE $ad_project_params(SPI_4WIRE)  
 #extrage si seteaza valoarea parametrului SPI_4WIRE dintr-o variabila globala. Controleaza daca SPI functioneaza in modul 4-wire.
@@ -80,7 +105,7 @@ ad_connect $hier_spi_engine/m_spi ad5592r_spi
 ad_connect axi_ad5592r_dma/s_axis $hier_spi_engine/M_AXIS_SAMPLE
 
 ad_connect ad5592r_trigger_gen/pwm_0 $hier_spi_engine/trigger
-
+ad_connect ad5592r_trigger_gen/pwm_0 ad5592r_spi_cnv
 ad_cpu_interconnect 0x44a00000 $hier_spi_engine/${hier_spi_engine}_axi_regmap
 ad_cpu_interconnect 0x44a30000 axi_ad5592r_dma
 ad_cpu_interconnect 0x44a70000 spi_clkgen
@@ -91,25 +116,3 @@ ad_cpu_interrupt "ps-12" "mb-12" $hier_spi_engine/irq
 
 ad_mem_hp2_interconnect sys_cpu_clk sys_ps7/S_AXI_HP2
 ad_mem_hp2_interconnect sys_cpu_clk axi_ad5592r_dma/m_dest_axi
-
-
-# 1. create ports: pwm_led_0_r, pwm_led_0_g, pwm_led_0_b, pwm_led_1_r, pwm_led_1_g, pwm_led_1_b ports
-    # command example: create_bd_port -dir O example led
- # create_bd_port -dir O pwm_led_0_r
- # create_bd_port -dir O pwm_led_0_b
- # create_bd_port -dir O pwm_led_0_g
- # create_bd_port -dir O pwm_led_1_r
- # create_bd_port -dir O pwm_led_1_b
- # create_bd_port -dir O pwm_led_1_g
-# 2. add axi_pwm_custom IP using ad_ip_instance command
-#  ad_ip_instance  axi_pwm_custom axi_pwm_custom_i
-# 3. connect the axi_pwm_custom IP to the block design ports using ad_connect command
- # ad_connect pwm_led_0_r axi_pwm_custom_i/pwm_led_0
- # ad_connect pwm_led_0_g axi_pwm_custom_i/pwm_led_1
- # ad_connect pwm_led_0_b axi_pwm_custom_i/pwm_led_2
- # ad_connect pwm_led_1_r axi_pwm_custom_i/pwm_led_3
- # ad_connect pwm_led_1_g axi_pwm_custom_i/pwm_led_4
- # ad_connect pwm_led_1_b axi_pwm_custom_i/pwm_led_5
-# 4. connect the axi_pwm_custom IP to the CPU using ad_cpu_interconnect at 0x44a00000
-#ad_cpu_interconnect 0x44a00000 axi_pwm_custom_i
- 

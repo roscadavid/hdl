@@ -140,21 +140,26 @@ module system_top #(
   //   .dio_i(gpio_o[7:2]),
   //   .dio_o(gpio_i[7:2]),
   //   .dio_p(led));
-
+// De modificat 
 // Connect the PWM wires to the input port of the ad_iobuf
-  ad_iobuf #(
-    .DATA_WIDTH(6)
+ad_iobuf #(
+    .DATA_WIDTH (6)
   ) i_iobuf_leds (
-    .dio_t(gpio_t[7:2]),
-    .dio_i({pwm_led_1_g,  // led[5]
-            pwm_led_1_r,  // led[4]
-            pwm_led_1_b,  // led[3]
-            pwm_led_0_g,  // led[2]
-            pwm_led_0_r,  // led[1]
-            pwm_led_0_b}),// led[0]
-    .dio_o(gpio_i[7:2]),
-    .dio_p(led)
-  );
+    .dio_t (6'b0),
+    .dio_i ({/*here*/           //led[5]
+            pwm_led_1_g,
+             /*here*/           //led[4]
+            pwm_led_1_r,
+             /*here*/           //led[3]
+            pwm_led_1_b,
+             /*here*/           //led[2]
+            pwm_led_0_g,
+             /*here*/           //led[1]
+            pwm_led_0_r,
+             /*here*/
+            pwm_led_0_b}),        //led[0]
+    .dio_o (gpio_i[7:2]),
+    .dio_p (led));
 
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),

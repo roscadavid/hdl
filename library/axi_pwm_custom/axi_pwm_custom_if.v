@@ -33,57 +33,43 @@
 // ***************************************************************************
 // ***************************************************************************
 // This is the LVDS/DDR interface
-
 `timescale 1ns/100ps
-
-module axi_pwm_custom_if ( 
-
+module axi_pwm_custom_if (
   input            pwm_clk,
-  input            rstn,
-  input    [11:0]  data_channel_0,
-  input    [11:0]  data_channel_1,
-  input    [11:0]  data_channel_2,
-  input    [11:0]  data_channel_3,
-  input    [11:0]  data_channel_4,
-  input    [11:0]  data_channel_5,
-  output           pwm_led_0,
-  output           pwm_led_1,
-  output           pwm_led_2,
-  output           pwm_led_3,
-  output           pwm_led_4,
-  output           pwm_led_5
+ (* MARK_DEBUG = "TRUE" *) input            rstn,
+ (* MARK_DEBUG = "TRUE" *) input    [11:0]  data_channel_0,
+ (* MARK_DEBUG = "TRUE" *) input    [11:0]  data_channel_1,
+ (* MARK_DEBUG = "TRUE" *) input    [11:0]  data_channel_2,
+ (* MARK_DEBUG = "TRUE" *) input    [11:0]  data_channel_3,
+ (* MARK_DEBUG = "TRUE" *) input    [11:0]  data_channel_4,
+ (* MARK_DEBUG = "TRUE" *) input    [11:0]  data_channel_5,
+ (* MARK_DEBUG = "TRUE" *) output           pwm_led_0,
+ (* MARK_DEBUG = "TRUE" *) output           pwm_led_1,
+ (* MARK_DEBUG = "TRUE" *) output           pwm_led_2,
+ (* MARK_DEBUG = "TRUE" *) output           pwm_led_3,
+ (* MARK_DEBUG = "TRUE" *) output           pwm_led_4,
+ (* MARK_DEBUG = "TRUE" *) output           pwm_led_5
 );
-
   localparam PULSE_PERIOD = 4095;
-
 // internal registers
-
-  reg [11:0] counter = 0;
-
-  reg [11:0] data_channel_0_aux;
-  reg [11:0] data_channel_1_aux;
-  reg [11:0] data_channel_2_aux;
-  reg [11:0] data_channel_3_aux;
-  reg [11:0] data_channel_4_aux;
-  reg [11:0] data_channel_5_aux;
-
-  reg r_0 = 0;
-  reg r_1 = 0;
-  reg r_2 = 0;
-  reg r_3 = 0;
-  reg r_4 = 0;
-  reg r_5 = 0;
-
+  (* MARK_DEBUG = "TRUE" *) reg [11:0] counter = 0;
+ (* MARK_DEBUG = "TRUE" *) reg [11:0] data_channel_0_aux;
+ (* MARK_DEBUG = "TRUE" *) reg [11:0] data_channel_1_aux;
+ (* MARK_DEBUG = "TRUE" *) reg [11:0] data_channel_2_aux;
+ (* MARK_DEBUG = "TRUE" *) reg [11:0] data_channel_3_aux;
+ (* MARK_DEBUG = "TRUE" *) reg [11:0] data_channel_4_aux;
+ (* MARK_DEBUG = "TRUE" *) reg [11:0] data_channel_5_aux;
+ (* MARK_DEBUG = "TRUE" *)  reg r_0 = 0;
+ (* MARK_DEBUG = "TRUE" *)  reg r_1 = 0;
+ (* MARK_DEBUG = "TRUE" *)  reg r_2 = 0;
+ (* MARK_DEBUG = "TRUE" *)  reg r_3 = 0;
+ (* MARK_DEBUG = "TRUE" *)  reg r_4 = 0;
+ (* MARK_DEBUG = "TRUE" *)  reg r_5 = 0;
 // internal wires
-
-  wire end_of_period;
-
+  (* MARK_DEBUG = "TRUE" *) wire end_of_period;
 // generate a signal named end_of_period which has '1' logic value at the end of the PULSE_PERIOD
-
   assign end_of_period = (counter == PULSE_PERIOD) ? 1 : 0;
-
 // Create a counter from 0 to PULSE_PERIOD
-
   always @(posedge pwm_clk or negedge rstn) begin
     if (rstn == 0)
         counter <= 0;
@@ -94,53 +80,44 @@ module axi_pwm_custom_if (
           counter <= counter + 1;
     end
    end
-
 // control the pwm signal value based on the input signal and counter value
-
   always @(posedge pwm_clk) begin
     if (counter < data_channel_0_aux)
       r_0 <= 1;
     else
       r_0 <= 0;
   end
-
   always @(posedge pwm_clk) begin
     if (counter < data_channel_1_aux)
       r_1 <= 1;
     else
       r_1 <= 0;
   end
-
   always @(posedge pwm_clk) begin
     if (counter < data_channel_2_aux)
       r_2 <= 1;
     else
       r_2 <= 0;
   end
-
   always @(posedge pwm_clk) begin
     if (counter < data_channel_3_aux)
       r_3 <= 1;
     else
       r_3 <= 0;
   end
-
   always @(posedge pwm_clk) begin
     if (counter < data_channel_4_aux)
       r_4 <= 1;
     else
       r_4 <= 0;
   end
-
   always @(posedge pwm_clk) begin
     if (counter < data_channel_5_aux)
       r_5 <= 1;
     else
       r_5 <= 0;
   end
-
 // make sure that the new data is processed only after the end_of_period
-
   always @(posedge end_of_period) begin
     data_channel_0_aux <= data_channel_0;
     data_channel_1_aux <= data_channel_1;
@@ -149,13 +126,10 @@ module axi_pwm_custom_if (
     data_channel_4_aux <= data_channel_4;
     data_channel_5_aux <= data_channel_5;
   end
-
-
   assign pwm_led_0 = r_0;
   assign pwm_led_1 = r_1;
   assign pwm_led_2 = r_2;
   assign pwm_led_3 = r_3;
   assign pwm_led_4 = r_4;
   assign pwm_led_5 = r_5;
-
 endmodule

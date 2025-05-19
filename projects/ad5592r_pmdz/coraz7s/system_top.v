@@ -62,7 +62,7 @@ module system_top #(
   inout         fixed_io_ps_srstb,
 
   inout  [1:0]  btn,
-  inout  [5:0]  led,
+  output [5:0]  led,
 
   inout         iic_ard_scl,
   inout         iic_ard_sda,
@@ -98,6 +98,7 @@ module system_top #(
   wire          pwm_led_0_r; 
   wire          pwm_led_0_g;
   wire          pwm_led_0_b; 
+  
   wire          pwm_led_1_r;
   wire          pwm_led_1_g; 
   wire          pwm_led_1_b;
@@ -142,24 +143,32 @@ module system_top #(
   //   .dio_p(led));
 // De modificat 
 // Connect the PWM wires to the input port of the ad_iobuf
-ad_iobuf #(
-    .DATA_WIDTH (6)
-  ) i_iobuf_leds (
-    .dio_t (6'b0),
-    .dio_i ({/*here*/           //led[5]
-            pwm_led_1_g,
-             /*here*/           //led[4]
-            pwm_led_1_r,
-             /*here*/           //led[3]
-            pwm_led_1_b,
-             /*here*/           //led[2]
-            pwm_led_0_g,
-             /*here*/           //led[1]
-            pwm_led_0_r,
-             /*here*/
-            pwm_led_0_b}),        //led[0]
-    .dio_o (gpio_i[7:2]),
-    .dio_p (led));
+// ad_iobuf #(
+//     .DATA_WIDTH (6)
+//   ) i_iobuf_leds (
+//     .dio_t (6'b0),
+//     .dio_i ({/*here*/           //led[5]
+//             pwm_led_1_g,
+//              /*here*/           //led[4]
+//             pwm_led_1_r,
+//              /*here*/           //led[3]
+//             pwm_led_1_b,
+//              /*here*/           //led[2]
+//             pwm_led_0_g,
+//              /*here*/           //led[1]
+//             pwm_led_0_r,
+//              /*here*/
+//             pwm_led_0_b}),        //led[0]
+//     .dio_o (gpio_i[7:2]),
+//     .dio_p (led));
+
+assign led[0] = pwm_led_0_r;
+assign led[1] = pwm_led_0_b;
+assign led[2] = pwm_led_0_g;
+
+assign led[3] = pwm_led_1_r;
+assign led[4] = pwm_led_1_b;
+assign led[5] = pwm_led_1_g;
 
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
@@ -222,3 +231,4 @@ ad_iobuf #(
     .pwm_led_1_g(pwm_led_1_g)); 
 
 endmodule
+

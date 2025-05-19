@@ -26,9 +26,8 @@ ad_connect pwm_led_1_r axi_pwm_custom_i/pwm_led_3
 ad_connect pwm_led_1_g axi_pwm_custom_i/pwm_led_4
 ad_connect pwm_led_1_b axi_pwm_custom_i/pwm_led_5
 
-#connect the axi_pwm_custom IP to the CPU using ad_cpu_interconnect at 0x44a00000
-ad_cpu_interconnect 0x44b30000 axi_pwm_custom_i
-
+#connect the axi_pwm_custom IP to the CPU using ad_cpu_interconnect at 0x44b30000
+ad_cpu_interconnect  0x44b30000 axi_pwm_custom_i
 
 set SPI_4WIRE $ad_project_params(SPI_4WIRE)  
 #extrage si seteaza valoarea parametrului SPI_4WIRE dintr-o variabila globala. Controleaza daca SPI functioneaza in modul 4-wire.
@@ -42,7 +41,6 @@ create_bd_port -dir O ad5592r_spi_cnv
 create_bd_port -dir I ad5592r_spi_busy
 create_bd_port -dir I gpio_cnv
 #busy si gpio sunt porturile de intrare
-
 
 source $ad_hdl_dir/library/spi_engine/scripts/spi_engine.tcl
 # se incarca un script extern pentru configurare SPI Engine 
